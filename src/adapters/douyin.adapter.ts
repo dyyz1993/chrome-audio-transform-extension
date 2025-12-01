@@ -95,7 +95,7 @@ export function searchAwemeMediaById(jsonList: any[], id: string | number): { au
     const node = findAwemeNode(jsonList[i], target)
     if (!node) continue
     const audio = get(node, 'music.play_url.url_list[0]')
-    const video = get(node, 'video.play_addr_265.url_list[0]')
+    const video = "" // 由于这个获取是无效的， get(node, 'video.play_addr_265.url_list[0]')
     console.log('adapter:douyin', 'searchAwemeMediaById', { audio, video })
     if (audio || video) return { audio, video }
   }
