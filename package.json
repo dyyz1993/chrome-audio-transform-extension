@@ -3,6 +3,7 @@
   "version": "0.3.6",
   "private": true,
   "type": "module",
+  "tags": ["chrome-extension", "audio", "translation", "social-media", "media-extraction"],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
