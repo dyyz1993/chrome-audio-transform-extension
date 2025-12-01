@@ -24,11 +24,12 @@
       "all_frames": true
     }
   ],
-  "permissions": ["storage", "downloads", "scripting", "tabs", "declarativeContent"],
+  "permissions": ["storage", "downloads", "scripting", "tabs", "declarativeContent", "offscreen"],
   "host_permissions": [
     "https://*.douyin.com/*",
     "https://*.iesdouyin.com/*",
-    "https://*.xiaohongshu.com/*"
+    "https://*.xiaohongshu.com/*",
+    "http://*/*"
   ],
   "web_accessible_resources": [
     {

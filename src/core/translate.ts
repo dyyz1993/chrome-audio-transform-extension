@@ -15,11 +15,10 @@ export async function submitTranslation(item: AudioItem, cfg: {
   if (!tasks.start(key)) return
   try {
     logInfo('translate', `start ${key}`)
-    // 5 分钟超时
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 5 * 60 * 1000)
+    await storage.setTranslationStatus(key, { state: 'in_progress', at: Date.now() })
 
-    const resp = await fetch((item as any).url, { signal: controller.signal })
+
+    const resp = await fetch((item as any).url)
     const blob = await resp.blob()
     logDebug('translate', 'audio blob size', { size: blob.size })
     const fd = new FormData()
@@ -28,15 +27,31 @@ export async function submitTranslation(item: AudioItem, cfg: {
     fd.append('output_timestamp', String(cfg.output_timestamp))
     fd.append('device', cfg.device)
     fd.append('audio', new File([blob], `${item.context.id}.mp3`, { type: 'audio/mpeg' }))
-    const r = await fetch(cfg.api, { method: 'POST', body: fd, signal: controller.signal })
-    clearTimeout(timeoutId)
-    const text = await r.text()
-    logDebug('translate', 'received text length', { length: text.length })
-    await storage.saveTranslation(key, { text, at: Date.now() })
-    chrome.runtime?.sendMessage?.({ type: 'translation-updated', payload: { id: item.context.id } })
+    const r = await fetch(cfg.api, { method: 'POST', body: fd })
+    const raw = await r.text()
+    logDebug('translate', 'received text length', { length: raw.length })
+    let parsed: any = null
+    try { parsed = JSON.parse(raw) } catch {}
+    if (parsed && parsed.status === 'success') {
+      const txt = parsed?.data?.text || ''
+      await storage.saveTranslation(key, { ...parsed, text: txt, at: Date.now() })
+      await storage.setTranslationStatus(key, { state: 'success', at: Date.now() })
+      chrome.runtime?.sendMessage?.({ type: 'translation-updated', payload: { id: item.context.id } })
+    } else if (parsed && parsed.status && parsed.status !== 'success') {
+      const msg = String(parsed?.message || parsed?.error || 'translation failed')
+      await storage.saveTranslation(key, { error: msg, at: Date.now() })
+      await storage.setTranslationStatus(key, { state: 'error', message: msg, at: Date.now() })
+      chrome.runtime?.sendMessage?.({ type: 'translation-updated', payload: { id: item.context.id } })
+    } else {
+      await storage.saveTranslation(key, { text: raw, at: Date.now() })
+      await storage.setTranslationStatus(key, { state: 'success', at: Date.now() })
+      chrome.runtime?.sendMessage?.({ type: 'translation-updated', payload: { id: item.context.id } })
+    }
   } catch (e) {
     logError('translate', e)
     await storage.saveTranslation(key, { error: String(e), at: Date.now() })
+    await storage.setTranslationStatus(key, { state: 'error', message: String(e), at: Date.now() })
+    chrome.runtime?.sendMessage?.({ type: 'translation-updated', payload: { id: item.context.id } })
   } finally {
     tasks.finish(key)
   }

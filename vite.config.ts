@@ -22,7 +22,8 @@ export default defineConfig({
         options: 'src/options/index.html',
         'background/index': 'src/background/index.ts',
         'content/index': 'src/content/index.ts',
-        'content/inject': 'src/content/inject.ts'
+        'content/inject': 'src/content/inject.ts',
+        'offscreen/index': 'src/offscreen/index.html'
       },
       output: {
         entryFileNames: assetInfo => {

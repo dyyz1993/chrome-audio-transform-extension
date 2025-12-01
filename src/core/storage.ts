@@ -34,6 +34,15 @@ export const storage = {
     try { (await import('./logger')).logDebug('core:storage', 'getTranslation', { key, exist: !!r[`translation:${key}`] }) } catch {}
     return r[`translation:${key}`] || null
   },
+  async setTranslationStatus(key: string, status: { state: 'in_progress' | 'success' | 'error'; message?: string; at: number }): Promise<void> {
+    await chrome.storage.local.set({ [`translation-status:${key}`]: status })
+    try { (await import('./logger')).logDebug('core:storage', 'setTranslationStatus', { key, state: status.state }) } catch {}
+  },
+  async getTranslationStatus(key: string): Promise<any | null> {
+    const r = await chrome.storage.local.get([`translation-status:${key}`])
+    try { (await import('./logger')).logDebug('core:storage', 'getTranslationStatus', { key, exist: !!r[`translation-status:${key}`] }) } catch {}
+    return r[`translation-status:${key}`] || null
+  },
   /**
    * 同步获取翻译配置：使用 globalThis 统一跨环境（window/service worker）
    */

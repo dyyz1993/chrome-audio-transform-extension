@@ -16,6 +16,7 @@ export function renderItems(el: HTMLElement, items: any[]): void {
     return
   }
   const hasTranslation = relevant.some(x => x?.kind === 'translation')
+  const hasTranslating = relevant.some(x => x?.kind === 'translation-status' && !(x as any).error)
   for (const it of relevant) {
     const div = document.createElement('div')
     div.className = 'item'
@@ -27,7 +28,7 @@ export function renderItems(el: HTMLElement, items: any[]): void {
     label.textContent = labelFor(it)
     left.append(icon, label)
     const right = document.createElement('div')
-    if (it.kind === 'audio' && !hasTranslation) {
+    if (it.kind === 'audio' && !hasTranslation && !hasTranslating) {
       const badge = document.createElement('span')
       badge.className = 'badge warn'
       const id = String(it?.context?.id || '')
@@ -48,6 +49,12 @@ export function renderItems(el: HTMLElement, items: any[]): void {
       right.appendChild(badge)
     }
     if (it.kind === 'translation') {
+      const m = (it as any).meta || {}
+      const parts: string[] = []
+      if (m.model) parts.push(String(m.model))
+      if (m.file_size_mb) parts.push(`${m.file_size_mb}MB`)
+      if (m.duration_ms != null) parts.push(`${Math.round(Number(m.duration_ms) / 1000)}s`)
+      if (parts.length) label.textContent = `${label.textContent} (${parts.join(' · ')})`
       const copyBtn = document.createElement('button')
       copyBtn.className = 'badge ok'
       copyBtn.textContent = '复制'
@@ -69,10 +76,30 @@ export function renderItems(el: HTMLElement, items: any[]): void {
         }
       })
       right.appendChild(copyBtn)
+
+      const dlBtn = document.createElement('button')
+      dlBtn.className = 'badge ok'
+      dlBtn.textContent = '下载'
+      dlBtn.style.cursor = 'pointer'
+      dlBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation()
+        const txt = String((it as any).text || '')
+        if (!txt) return
+        const synthetic: any = { kind: 'text', context: it.context, text: txt }
+        void download(synthetic as any, 'translation.txt')
+      })
+      right.appendChild(dlBtn)
+    }
+    if (it.kind === 'translation-status') {
+      label.textContent = String((it as any).text || '')
+      label.style.fontSize = '12px'
+      label.style.color = '#9ca3af'
     }
     div.append(left, right)
-    div.style.cursor = 'pointer'
-    div.addEventListener('click', () => { void download(it) })
+    if (it.kind !== 'translation') {
+      div.style.cursor = 'pointer'
+      div.addEventListener('click', () => { void download(it) })
+    }
     el.appendChild(div)
   }
 }

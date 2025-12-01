@@ -1,7 +1,17 @@
 import { orchestrate } from '@core/orchestrator'
 import { storage } from '@core/storage'
-import { submitTranslation } from '@core/translate'
 import { logDebug, setDebugEnabled, logInfo } from '@core/logger'
+import { submitTranslation } from '@core/translate'
+async function ensureOffscreen() {
+  const has = await chrome.offscreen.hasDocument?.()
+  if (!has) {
+    await chrome.offscreen.createDocument({
+      url: 'src/offscreen/index.html',
+      reasons: ['DOM_SCRAPING'],
+      justification: 'Run long-lived translation requests without service worker termination'
+    })
+  }
+}
 
 /**
  * 后台入口：处理统一结果、翻译触发与与 Popover 通信
@@ -28,7 +38,14 @@ chrome.runtime.onMessage.addListener((msg, sender, _sendResponse) => {
       const ex = await storage.getExtraction(context.platform, context.id)
       const audio = ex?.items?.find((i: any) => i.kind === 'audio')
       const cfg = storage.getTranslationConfigSync()
-      if (audio && cfg?.api) await submitTranslation(audio, cfg)
+      if (audio && cfg?.api) {
+        try {
+          await ensureOffscreen()
+          await chrome.runtime.sendMessage({ type: 'offscreen-translate', payload: { audio, cfg } })
+        } catch {
+          await submitTranslation(audio, cfg)
+        }
+      }
       else logDebug('bg', 'no audio or api missing', { hasAudio: !!audio, api: cfg?.api })
     })()
     return true

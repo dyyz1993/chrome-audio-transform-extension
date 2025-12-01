@@ -52,10 +52,7 @@ import * as bridge from './bridge'
     if (msg?.type !== 'popup-open') return
     try {
       const id = extractDouyinContextId(document, location.href)
-      if (!id) {
-        try { chrome.runtime?.sendMessage?.({ type: 'popup-no-context' }) } catch {}
-        return
-      }
+      if (!id) return
       const r = extractFromCacheById(id)
       if (r) bridge.sendUnified(r)
     } catch {}
