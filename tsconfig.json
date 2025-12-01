@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2021", "DOM"],
+    "strict": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["chrome-types"],
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@contracts/*": ["src/contracts/*"],
+      "@adapters/*": ["src/adapters/*"],
+      "@content/*": ["src/content/*"],
+      "@core/*": ["src/core/*"],
+      "@types/*": ["src/types/*"],
+      "@popup/*": ["src/popup/*"],
+      "@options/*": ["src/options/*"]
+    }
+  },
+  "include": ["src"]
+}
