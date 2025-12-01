@@ -49,4 +49,4 @@ MIT License
 If you have any questions or suggestions, please contact us through:
 
 - GitHub Issues
-- Email: [your-email@example.com]
+- Email: dyyz1993@qq.com
