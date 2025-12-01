@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社交媒体音频提取与翻译工具</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #ff2442;
+            --secondary-color: #ff9a76;
+            --dark-color: #333;
+            --light-bg: #fff8f8;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 2.8rem;
+        }
+        
+        .feature-card {
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .screenshot {
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            width: 100%;
+            height: auto;
+        }
+        
+        .screenshot:hover {
+            transform: scale(1.02);
+        }
+        
+        .gallery-container {
+            padding: 60px 0;
+        }
+        
+        .gallery-item {
+            margin-bottom: 30px;
+        }
+        
+        .gallery-caption {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        
+        .cta-section {
+            background-color: var(--light-bg);
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-weight: bold;
+            color: white;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 36, 66, 0.3);
+            color: white;
+        }
+        
+        .feature-section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 50px;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+        
+        .git-code {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .step-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .stars {
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .social-icon {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>🎵 社交媒体音频提取与翻译工具</h1>
+            <p class="lead">一键提取抖音音频，智能翻译多语言内容，内容创作者必备神器！</p>
+            <div class="mt-4">
+                <a href="#features" class="cta-button">了解更多</a>
+                <a href="#download" class="cta-button">立即下载</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="feature-section">
+        <div class="container">
+            <h2 class="section-title">核心功能</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card p-4">
+                        <div class="feature-icon text-center">
+                            <i class="bi bi-music-note-beamed"></i>
+                        </div>
+                        <h4 class="text-center">音频提取</h4>
+                        <p>一键提取抖音视频中的音频内容，支持高质量MP3、WAV等多种格式，保留原始音质。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4">
+                        <div class="feature-icon text-center">
+                            <i class="bi bi-translate"></i>
+                        </div>
+                        <h4 class="text-center">智能翻译</h4>
+                        <p>集成AI翻译引擎，支持多语言音频翻译，准确率高，速度快，适合跨语言内容创作。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4">
+                        <div class="feature-icon text-center">
+                            <i class="bi bi-layers"></i>
+                        </div>
+                        <h4 class="text-center">批量处理</h4>
+                        <p>支持批量提取和翻译多个音频文件，提高工作效率，节省宝贵时间。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-container">
+        <div class="container">
+            <h2 class="section-title">界面展示</h2>
+            <div class="row g-4">
+                <div class="col-md-6 gallery-item">
+                    <img src="docs/images/preview.png" alt="主界面" class="screenshot">
+                    <p class="gallery-caption">主界面 - 音频提取与翻译</p>
+                </div>
+                <div class="col-md-6 gallery-item">
+                    <img src="docs/images/setting.png" alt="设置界面" class="screenshot">
+                    <p class="gallery-caption">设置界面 - 个性化配置</p>
+                </div>
+                <div class="col-md-6 gallery-item">
+                    <img src="docs/images/third-part-voice.png" alt="第三方语音服务" class="screenshot">
+                    <p class="gallery-caption">第三方语音服务配置</p>
+                </div>
+                <div class="col-md-6 gallery-item">
+                    <img src="docs/images/usage-demo.png" alt="使用演示" class="screenshot">
+                    <p class="gallery-caption">使用演示 - 一键提取</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+    <section class="feature-section">
+        <div class="container">
+            <h2 class="section-title">使用教程</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4>安装插件</h4>
+                        <p>下载插件文件，在Chrome浏览器中开启开发者模式，加载已解压的扩展程序。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4>访问抖音</h4>
+                        <p>打开抖音网页版，浏览到包含音频的视频内容页面。</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4>提取音频</h4>
+                        <p>点击浏览器工具栏中的扩展图标，在弹出的界面中点击提取按钮。</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4>翻译下载</h4>
+                        <p>选择需要翻译的音频，点击翻译按钮，完成后下载翻译后的文件。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="gallery-container">
+        <div class="container">
+            <h2 class="section-title">用户评价</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p>"这个插件太棒了！作为内容创作者，我经常需要提取音频进行二次创作，这个工具大大提高了我的工作效率。"</p>
+                        <p class="mb-0"><strong>@内容创作者小王</strong></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p>"翻译功能非常实用，我可以用它来学习外语，提取的音频翻译准确率很高，对我的语言学习帮助很大。"</p>
+                        <p class="mb-0"><strong>@语言学习者小李</strong></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p>"界面简洁，操作方便，一键提取音频非常快捷，推荐给所有需要音频提取功能的朋友！"</p>
+                        <p class="mb-0"><strong>@科技达人小张</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="download" class="cta-section">
+        <div class="container">
+            <h2 class="mb-4">立即下载体验</h2>
+            <p class="lead mb-4">免费开源，支持多种音频格式，一键提取，智能翻译</p>
+            
+            <div class="git-code">
+                github.com/dyyz1993/chrome-audio-transform-extension
+            </div>
+            
+            <div class="mt-4">
+                <a href="github.com/dyyz1993/chrome-audio-transform-extension" class="cta-button">
+                    <i class="bi bi-github"></i> 访问GitHub
+                </a>
+                <a href="#features" class="cta-button">
+                    <i class="bi bi-info-circle"></i> 了解更多
+                </a>
+            </div>
+            
+            <div class="mt-5">
+                <h4>安装步骤</h4>
+                <ol class="text-start">
+                    <li>访问GitHub下载最新版本</li>
+                    <li>解压到本地文件夹</li>
+                    <li>打开Chrome浏览器，进入 <code>chrome://extensions/</code></li>
+                    <li>开启"开发者模式"</li>
+                    <li>点击"加载已解压的扩展程序"</li>
+                    <li>选择解压的文件夹</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="mb-3">
+                <a href="#" class="social-icon"><i class="bi bi-github"></i></a>
+                <a href="#" class="social-icon"><i class="bi bi-envelope"></i></a>
+                <a href="#" class="social-icon"><i class="bi bi-wechat"></i></a>
+            </div>
+            <p>&copy; 2023 社交媒体音频提取与翻译工具. 保留所有权利.</p>
+            <p>开源项目，遵循MIT协议</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 复制Git地址功能
+        document.querySelector('.git-code').addEventListener('click', function() {
+            const text = this.textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = this.textContent;
+                this.textContent = '已复制到剪贴板！';
+                setTimeout(() => {
+                    this.textContent = originalText;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
