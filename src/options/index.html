@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>下载器设置</title>
+    <style>
+      body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background: #0b1020; color: #e5e7eb; }
+      .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
+      h1 { background: #1E3A8A; padding: 12px; border-radius: 8px; }
+      .row { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; padding: 8px 0; align-items: center; }
+      input[type=text], select { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #334155; background: #111827; color: #e5e7eb; }
+      .btn { background: #374151; color: #e5e7eb; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
+      .btn:hover { background: #4b5563; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1 id="title">[平台名称] 下载器设置</h1>
+      <div class="row">
+        <div>清除下载记录</div>
+        <div><button id="btn-clear" class="btn">清除</button></div>
+      </div>
+      <div class="row">
+        <div>允许重复下载</div>
+        <div><select id="repeat"><option value="off">OFF</option><option value="on">ON</option></select></div>
+      </div>
+      <div class="row">
+        <div>每次下载选保存位置</div>
+        <div><select id="chooseLoc"><option value="off">OFF</option><option value="on">ON</option></select></div>
+      </div>
+      <div class="row">
+        <div>检查内容更新时机</div>
+        <div><select id="refresh"><option value="never">从不</option><option value="enter">每次进入页面</option><option value="reload">每次刷新</option></select></div>
+      </div>
+      <div class="row">
+        <div>下载图片格式</div>
+        <div><select id="imgfmt"><option value="original">与原始格式相同</option><option value="jpg">JPG</option><option value="heic">HEIC（EXIF）</option></select></div>
+      </div>
+      <div class="row">
+        <div>音频翻译的 URL</div>
+        <div><input id="transApi" type="text" placeholder="http://0.0.0.0:8000/api/scripts/10/run" /></div>
+      </div>
+      <div class="row">
+        <div>笔记下载顺序</div>
+        <div><select id="order"><option value="newest">从最新到最旧</option><option value="oldest">从最旧到最新</option></select></div>
+      </div>
+      <div class="row">
+        <div>用户昵称/ID（用于子目录）</div>
+        <div>
+          <input id="nickname" type="text" placeholder="user" />
+          <input id="userid" type="text" placeholder="id" />
+        </div>
+      </div>
+      <div><button id="btn-save" class="btn">保存设置</button></div>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+  </html>
