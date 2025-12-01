@@ -10,7 +10,7 @@ export function extractXhsIdFromUrl(url: string): string | null {
 }
 
 /**
- * 构建小红书适配器：安装拦截并输出统一结果
+ * 构建小红书适配器：安装拦截并输出统一结果（待实现）
  */
 export function buildXhsAdapter(): { handleJson: (reqUrl: string, json: any, xhr: boolean) => UnifiedExtractionResult | null } {
   return {

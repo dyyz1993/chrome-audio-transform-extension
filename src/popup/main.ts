@@ -78,8 +78,8 @@ function subscribeRefresh(): void {
  */
 function init(): void {
   document.getElementById('btn-settings')?.addEventListener('click', () => chrome.runtime.openOptionsPage())
-  document.getElementById('btn-report')?.addEventListener('click', () => alert('请在设置页提交错误报告'))
-  document.getElementById('btn-donate')?.addEventListener('click', () => alert('感谢支持！'))
+  document.getElementById('btn-report')?.addEventListener('click', () => alert('请在设置页提交错误报告，暂未实现'))
+  document.getElementById('btn-donate')?.addEventListener('click', () => alert('感谢支持！暂未实现'))
   subscribeRefresh()
   resetEmptyState()
   try { chrome.runtime.sendMessage({ type: 'popup-open' }) } catch {}

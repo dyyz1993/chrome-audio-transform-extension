@@ -5,3 +5,4 @@ package-lock.json
 .freeze
 .env
 test-data
+.DS_Store
