@@ -198,7 +198,7 @@ npm run build
 如有问题或建议，请通过以下方式联系 / For questions or suggestions, please contact:
 
 - 创建 Issue / Create an Issue
-- 邮箱 / Email: [your-email@example.com]
+- 邮箱 / Email: dyyz1993@qq.com
 
 ---
 
