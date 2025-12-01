@@ -14,14 +14,15 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    
+    sourcemap: true,
+    target: 'es2015',
     rollupOptions: {
       input: {
         popup: 'src/popup/index.html',
         options: 'src/options/index.html',
         'background/index': 'src/background/index.ts',
         'content/index': 'src/content/index.ts',
-        'content/loader': 'src/content/loader.ts'
+        'content/inject': 'src/content/inject.ts'
       },
       output: {
         entryFileNames: assetInfo => {

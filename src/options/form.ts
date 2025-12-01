@@ -9,6 +9,7 @@ export function readForm(): any {
     refresh: q('refresh').value,
     imgfmt: q('imgfmt').value,
     translation: { api: q('transApi').value, language: 'auto', use_itn: true, output_timestamp: false, device: 'cpu' },
+    debug: q('debug').value === 'on',
     userNickname: (q('nickname') as HTMLInputElement).value,
     userId: (q('userid') as HTMLInputElement).value
   }
@@ -25,8 +26,11 @@ export async function saveSettings(settings: any): Promise<void> {
  * 将翻译配置写入同步缓存（后台快速获取）
  */
 export function updateTranslationSync(cfg: any): void {
-  // @ts-expect-error 全局缓存供后台读取
   (globalThis as any).__translation_cfg__ = cfg
+}
+
+export function updateDebugSync(enabled: boolean): void {
+  (globalThis as any).__debug_enabled__ = enabled
 }
 
 /**
@@ -42,6 +46,7 @@ export async function renderSettings(): Promise<void> {
   w('imgfmt', s.imgfmt || 'original')
   w('transApi', s.translation?.api || '')
   w('order', s.order || 'newest')
+  w('debug', s.debug ? 'on' : 'off')
   w('nickname', s.userNickname || '')
   w('userid', s.userId || '')
 }

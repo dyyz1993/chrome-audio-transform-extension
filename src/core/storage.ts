@@ -34,14 +34,18 @@ export const storage = {
     try { (await import('./logger')).logDebug('core:storage', 'getTranslation', { key, exist: !!r[`translation:${key}`] }) } catch {}
     return r[`translation:${key}`] || null
   },
+  /**
+   * 同步获取翻译配置：使用 globalThis 统一跨环境（window/service worker）
+   */
   getTranslationConfigSync(): any {
     // 简易同步缓存（由设置页写入时同时更新）
-    // @ts-expect-error 临时全局缓存
-    return window.__translation_cfg__
+    return (globalThis as any).__translation_cfg__ || null
   },
+  /**
+   * 设置同步翻译配置：写入 globalThis 以兼容后台与页面环境
+   */
   setTranslationConfigSync(cfg: any): void {
-    // @ts-expect-error 临时全局缓存
-    window.__translation_cfg__ = cfg
+    ;(globalThis as any).__translation_cfg__ = cfg
   }
 }
 

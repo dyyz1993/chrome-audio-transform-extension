@@ -1,6 +1,11 @@
 /**
  * 渲染统一条目到 Popover 列表
  */
+import { download } from '@core/downloads'
+
+const inflight: Set<string> = (globalThis as any).__uiTranslationInflightIds__ || new Set<string>()
+;(globalThis as any).__uiTranslationInflightIds__ = inflight
+
 export function renderItems(el: HTMLElement, items: any[]): void {
   el.innerHTML = ''
   const relevant = sortRelevant(items)
@@ -10,6 +15,7 @@ export function renderItems(el: HTMLElement, items: any[]): void {
     el.appendChild(loading)
     return
   }
+  const hasTranslation = relevant.some(x => x?.kind === 'translation')
   for (const it of relevant) {
     const div = document.createElement('div')
     div.className = 'item'
@@ -21,13 +27,52 @@ export function renderItems(el: HTMLElement, items: any[]): void {
     label.textContent = labelFor(it)
     left.append(icon, label)
     const right = document.createElement('div')
-    if (it.kind === 'audio') {
+    if (it.kind === 'audio' && !hasTranslation) {
       const badge = document.createElement('span')
       badge.className = 'badge warn'
-      badge.textContent = '可翻译'
+      const id = String(it?.context?.id || '')
+      const isBusy = inflight.has(id)
+      badge.textContent = isBusy ? '翻译中' : '可翻译'
+      if (!isBusy) {
+        badge.style.cursor = 'pointer'
+        badge.addEventListener('click', (ev) => {
+          ev.stopPropagation()
+          inflight.add(id)
+          badge.textContent = '翻译中'
+          badge.style.cursor = 'not-allowed'
+          try { chrome.runtime?.sendMessage?.({ type: 'ensure-translation', payload: { context: it.context } }) } catch {}
+        })
+      } else {
+        badge.style.cursor = 'not-allowed'
+      }
       right.appendChild(badge)
     }
+    if (it.kind === 'translation') {
+      const copyBtn = document.createElement('button')
+      copyBtn.className = 'badge ok'
+      copyBtn.textContent = '复制'
+      copyBtn.style.cursor = 'pointer'
+      copyBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation()
+        const txt = String((it as any).text || '')
+        if (!txt) return
+        if (navigator.clipboard?.writeText) {
+          navigator.clipboard.writeText(txt).then(() => { copyBtn.textContent = '已复制' })
+        } else {
+          const ta = document.createElement('textarea')
+          ta.value = txt
+          document.body.appendChild(ta)
+          ta.select()
+          document.execCommand('copy')
+          document.body.removeChild(ta)
+          copyBtn.textContent = '已复制'
+        }
+      })
+      right.appendChild(copyBtn)
+    }
     div.append(left, right)
+    div.style.cursor = 'pointer'
+    div.addEventListener('click', () => { void download(it) })
     el.appendChild(div)
   }
 }
@@ -36,8 +81,8 @@ export function renderItems(el: HTMLElement, items: any[]): void {
  * 选择图标
  */
 function iconFor(kind: string): string {
-  if (kind === 'video') return '▶'
-  if (kind === 'audio') return '♪'
+  if (kind === 'video') return '📽️'
+  if (kind === 'audio') return '🎵'
   if (kind === 'image') return '🖼'
   if (kind === 'text') return '📄'
   if (kind === 'translation') return '🗣'

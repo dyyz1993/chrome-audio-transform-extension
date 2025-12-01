@@ -7,18 +7,17 @@ let debugEnabled = true
 
 export function setDebugEnabled(enabled: boolean): void {
   debugEnabled = enabled
-  // @ts-expect-error 全局缓存
-  ;(window as any).__debug_enabled__ = enabled
+  ;(globalThis as any).__debug_enabled__ = enabled
 }
 
 function shouldDebug(): boolean {
-  // @ts-expect-error 全局缓存
-  const g = (window as any).__debug_enabled__
+  const g = (globalThis as any).__debug_enabled__
   return g === undefined ? debugEnabled : !!g
 }
 
 async function emit(scope: string, level: Level, msg: string, data?: any): Promise<void> {
   try {
+    console.log(`[${scope}]`, level, msg, data ?? '')
     const entry = { scope, level, msg, data, at: Date.now() }
     if (level === 'debug' && !shouldDebug()) return
     if (level === 'error') console.error(`[${scope}]`, msg, data ?? '')

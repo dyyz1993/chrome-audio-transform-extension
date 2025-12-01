@@ -8,6 +8,7 @@
     "jsx": "react-jsx",
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "types": ["chrome-types"],
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {

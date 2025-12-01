@@ -12,6 +12,9 @@ export function sendUnified(result: any): void {
  */
 export function onBackgroundMessage(handler: (msg: any, sender: chrome.runtime.MessageSender) => void): void {
   try {
-    chrome.runtime?.onMessage?.addListener(handler)
+    chrome.runtime?.onMessage?.addListener((msg, sender, _sendResponse) => {
+      handler(msg, sender)
+      return undefined
+    })
   } catch {}
 }
