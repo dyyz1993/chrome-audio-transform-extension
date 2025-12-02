@@ -1,0 +1,101 @@
+name: Build and Release Chrome Extension
+
+# 触发工作流的事件
+on:
+  push:
+    tags:
+      - 'v*' # 当推送带有 v 前缀的标签时触发，如 v1.0.0
+  workflow_dispatch: # 允许手动触发工作流
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 检出代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    # 设置 Node.js 环境
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    # 安装依赖
+    - name: Install dependencies
+      run: npm ci
+      
+    # 构建项目
+    - name: Build extension
+      run: npm run build
+      
+    # 创建发布目录
+    - name: Create release directory
+      run: mkdir -p release
+      
+    # 复制构建产物到发布目录
+    - name: Copy build artifacts
+      run: |
+        cp -r dist/* release/
+        cp public/manifest.json release/
+        cp -r public/icons release/
+        
+    # 创建版本信息文件
+    - name: Create version info
+      run: |
+        echo "Build Information" > release/build-info.txt
+        echo "Version: ${{ github.ref_name }}" >> release/build-info.txt
+        echo "Build Date: $(date)" >> release/build-info.txt
+        echo "Commit: ${{ github.sha }}" >> release/build-info.txt
+        
+    # 创建压缩包
+    - name: Create zip archive
+      run: |
+        cd release
+        zip -r ../chrome-ext-audio-transform-${{ github.ref_name }}.zip .
+        
+    # 获取当前版本号
+    - name: Get version
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+    # 创建 Release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Chrome Extension ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## 更新内容
+          - 构建并打包 Chrome 扩展
+          - 版本: ${{ steps.get_version.outputs.VERSION }}
+          
+          ## 安装说明
+          1. 下载 `chrome-ext-audio-transform-${{ steps.get_version.outputs.VERSION }}.zip` 文件
+          2. 解压到本地文件夹
+          3. 打开 Chrome 浏览器，进入 `chrome://extensions/`
+          4. 开启"开发者模式"
+          5. 点击"加载已解压的扩展程序"
+          6. 选择解压的文件夹
+          
+          ## 注意事项
+          - 本扩展需要配置第三方翻译服务才能使用翻译功能
+          - 详细使用说明请查看项目 README
+        draft: false
+        prerelease: false
+        
+    # 上传压缩包到 Release
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./chrome-ext-audio-transform-${{ github.ref_name }}.zip
+        asset_name: chrome-ext-audio-transform-${{ github.ref_name }}.zip
+        asset_content_type: application/zip

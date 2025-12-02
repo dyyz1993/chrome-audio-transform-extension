@@ -1,0 +1,75 @@
+name: Build Extension Artifacts
+
+# 触发工作流的事件
+on:
+  push:
+    branches: [ main, master ] # 当推送到 main 或 master 分支时触发
+  pull_request:
+    branches: [ main, master ] # 当创建 PR 到 main 或 master 分支时触发
+  workflow_dispatch: # 允许手动触发工作流
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 检出代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    # 设置 Node.js 环境
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    # 安装依赖
+    - name: Install dependencies
+      run: npm ci
+      
+    # 构建项目
+    - name: Build extension
+      run: npm run build
+      
+    # 创建发布目录
+    - name: Create release directory
+      run: mkdir -p release
+      
+    # 复制构建产物到发布目录
+    - name: Copy build artifacts
+      run: |
+        cp -r dist/* release/
+        cp public/manifest.json release/
+        cp -r public/icons release/
+        
+    # 创建版本信息文件
+    - name: Create version info
+      run: |
+        echo "Build Information" > release/build-info.txt
+        echo "Build Date: $(date)" >> release/build-info.txt
+        echo "Commit: ${{ github.sha }}" >> release/build-info.txt
+        echo "Branch: ${{ github.ref_name }}" >> release/build-info.txt
+        
+    # 创建压缩包
+    - name: Create zip archive
+      run: |
+        cd release
+        zip -r ../chrome-ext-audio-transform-build-${{ github.sha }}.zip .
+        
+    # 上传构建产物作为 GitHub Actions 的 artifacts
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: chrome-extension-build
+        path: chrome-ext-audio-transform-build-${{ github.sha }}.zip
+        retention-days: 30 # 保留 30 天
+        
+    # 显示构建信息
+    - name: Display build info
+      run: |
+        echo "## Build Information" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Download**: Check the [Artifacts section](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to download the build" >> $GITHUB_STEP_SUMMARY
